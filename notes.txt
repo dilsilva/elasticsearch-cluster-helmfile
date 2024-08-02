@@ -1,0 +1,78 @@
+#info
+https://github.com/elastic/cloud-on-k8s/tree/2.13/deploy/eck-stack
+
+
+ES Replica pod should not be allowed to be schedule in the same node as the primary pod
+
+
+#assumptions
+The run team requires more read than write operations on their cluster
+
+near real time queries
+
+- poddisruptionbudget 
+- podaffinity
+- roles
+- authentication with secrets
+
+
+
+#strategy
+
+    Deliberate on the deployment method—whether it be through plain YAML, Helm, Kustomize, or any other suitable mechanism.
+
+
+    Outline how the solution will handle potential failures to maintain continuous service availability.
+
+
+    Elaborate on authentication, authorization, encryption, and any other security practices/concerns used in this solution.
+
+
+    Plan for ongoing operational tasks such as system upgrades, cluster scaling, disaster recovery procedures, etc. Explain your approach to handling these day-to-day operational challenges.
+
+
+    Draft a strategy for system observability, specifying which metrics are critical for monitoring and analyzing the system's health and performance.
+
+
+    Additional Future Improvements. We value your way of thinking, so try to avoid copying and pasting from other solutions or other resources/LLM models. If you want to use them, please put a reference.
+
+
+Kibana:
+ kubectl get secret --namespace=elastic-stack elasticsearch-es-elastic-user -o yaml
+
+ kubectl get secrets --namespace=elastic-stack picnic-elasticstack-eck-kibana-kibana-user -oyaml
+
+
+elastic:HI71S9Ov74G1nkRji9Ep702C
+
+
+#Create the Certificate
+
+openssl genrsa -des3 -out ca.key 2048
+openssl req -x509 -new -nodes -key ca.key -sha256 -days 1825 -out ca.crt
+
+#metrics
+kubectl create secret generic eck-metrics-tls-certificate --type=tls --from-file=tls.crt=certs/ca.crt --from-file=tls.key=certs/ca.key
+
+#transport
+kubectl create secret generic eck-transport-tls-certificate --type=tls --from-file=ca.crt=certs/ca.crt --from-file=ca.key=certs/ca.key
+
+#authentication
+kubectl create secret generic elastic-auth --from-literal=username=diego   --from-literal=password=password123 --from-literal=roles=all,manage
+
+#GET DEFAULT ELASTIC USER
+kubectl get secret quickstart-es-elastic-user -o go-template='{{.data.elastic | base64decode}}'
+
+
+doc roles
+https://www.elastic.co/guide/en/elasticsearch/reference/current/security-privileges.html
+
+
+#Automation
+mkdir filerealm
+touch filerealm/users 
+docker run \
+    -v $(pwd)/filerealm:/usr/share/elasticsearch/config \
+    docker.elastic.co/elasticsearch/elasticsearch:8.14.3 \
+    bin/elasticsearch-users useradd diego -p pass123 -r superuser
+kubectl create secret generic elastic-users --from-file filerealm

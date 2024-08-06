@@ -1,0 +1,17 @@
+replicaCount: 1
+resources:
+  limits:
+    cpu: 1
+    memory: 1Gi
+  requests:
+    cpu: 100m
+    memory: 150Mi
+podSecurityContext:
+  runAsNonRoot: true
+tracing:
+  enabled: false
+webhook:
+  enabled: false
+telemetry:
+  disabled: true
+  distributionChannel: helm

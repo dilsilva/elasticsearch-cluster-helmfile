@@ -1,0 +1,48 @@
+eck-elasticsearch:
+  podDisruptionBudget:
+    spec:
+    disabled: true
+  nodeSets:
+    - name: main
+      count: 2
+      config:
+        node.roles:
+          - master
+        node.store.allow_mmap: false
+      podTemplate:
+        spec: 
+          containers:
+            - name: elasticsearch
+              resources:
+                limits:
+                  memory: 2Gi
+                  cpu: 1
+        initContainers:
+            name: install-plugins
+            securityContext:
+              privileged: false
+    - name: data
+      count: 3
+      config:
+        node.roles:
+          - data
+          - ingest
+          - ml
+          - transform
+        node.store.allow_mmap: false
+      podTemplate:
+        spec: 
+          containers:
+            - name: elasticsearch
+              resources:
+                limits:
+                  memory: 2Gi
+                  cpu: 1
+        initContainers:
+            securityContext:
+              privileged: false
+eck-kibana:
+  enabled: true
+  fullnameOverride: kibana
+  spec:
+    count: 2

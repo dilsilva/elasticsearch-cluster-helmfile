@@ -1,7 +1,7 @@
 #!/bin/bash
 while :
 do
-curl -k -u elastic:2Nk4AUcG1H7Xm5172uI9sKA5 -X POST "https://localhost:9200/_bulk?pretty" -H 'Content-Type: application/json' -d'
+curl -k -u elastic:BMzL45fJ371No4r58Bm6Xna4 -X POST "https://localhost:9200/_bulk?pretty" -H 'Content-Type: application/json' -d'
 { "index" : { "_index" : "test" } }
 {"name": "Snow Crash", "author": "Neal Stephenson", "release_date": "1992-06-01", "page_count": 470, "_extract_binary_content": true, "_reduce_whitespace": true, "_run_ml_inference": true}
 { "index" : { "_index" : "test" } }

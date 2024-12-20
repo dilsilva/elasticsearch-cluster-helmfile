@@ -72,7 +72,7 @@ https://github.com/elastic/cloud-on-k8s/tree/main/deploy/eck-stack/charts
 ## Environments
 Each environments apply the default Values mentioned with adjusts for each case, i.e. `environments/default/` Values have less functionalities and implements less replicas with low resources while `environments/production/` implements Affinity strategies, Security restrictions and Monitoring capabilities.
 
-> See [SOLUTIONS.md] to understand the quirks and details around the decisions
+> See [SOLUTION.md] to understand the quirks and details around the decisions
 > taken during the implementation of the solution
 
 ## Verify your connection to Kubernetes
@@ -84,4 +84,4 @@ kubectl auth can-i delete pods
 
 
 [INSTRUCTIONS.md]: ./INSTRUCTIONS.md
-[SOLUTIONS.md]: ./SOLUTIONS.md
+[SOLUTION.md]: ./SOLUTION.md
